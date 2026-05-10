@@ -1,7 +1,7 @@
 # 📬 Mail + Google Groups → Notion Summarization Agent
 
 Reads your **Gmail inbox** and **Google Groups posts** (directly, not via Gmail),
-summarizes them using **NVIDIA NIM's free LLM API** (`nvidia/llama-3.1-nemotron-70b-instruct`),
+summarizes them using **NVIDIA NIM's free LLM API** (`meta/llama-3.3-70b-instruct`),
 and publishes clean summaries to your **Notion workspace** — 5× daily.
 
 ---
@@ -82,15 +82,21 @@ google_groups:
 
 ## 🎮 Usage
 
+### Manual Triggers
 ```bash
 # Test run — fetches + summarizes, prints output, does NOT publish to Notion
 python main.py --test
 
 # Run once immediately — fetches, summarizes, and publishes to Notion
 python main.py --run-now
+```
 
-# Start the full scheduler — runs at 9am, 12:30pm, 3pm, 6pm, 9pm IST
-python main.py
+### 🤖 Automatic Background Execution (macOS)
+The agent is configured to run automatically in the background using macOS `launchd`. It triggers at the times specified in your `config.yaml` (e.g., 9am, 12:30pm, etc.).
+
+If you ever need to view its live logs, run:
+```bash
+tail -f logs/launchd.log
 ```
 
 ---
@@ -112,7 +118,7 @@ mail_notion/
 │
 ├── agents/
 │   ├── gmail_agent.py        # Fetches Gmail inbox
-│   ├── groups_agent.py       # Fetches Google Groups (RSS + HTML)
+│   ├── groups_agent.py       # Fetches Google Groups (via Gmail API)
 │   ├── summarizer.py         # NVIDIA NIM LLM call
 │   └── notion_agent.py       # Publishes to Notion
 │
@@ -151,8 +157,8 @@ All preferences live in `config.yaml`:
 
 ## 🤖 Model Info
 
-**`nvidia/llama-3.1-nemotron-70b-instruct`**
-- NVIDIA's fine-tuned Llama 3.1 70B
+**`meta/llama-3.3-70b-instruct`**
+- Meta's highly capable Llama 3.3 70B
 - 128K context window (handles large email volumes)
 - Free tier: ~1000 credits/month on build.nvidia.com
 - OpenAI-compatible API at `https://integrate.api.nvidia.com/v1`
