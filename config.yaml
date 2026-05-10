@@ -1,0 +1,97 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  Mail + Google Groups → Notion Agent — Configuration
+# ──────────────────────────────────────────────────────────────────────────────
+#  Edit this file to customize WHAT the agent summarizes for you personally.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ─── GMAIL ────────────────────────────────────────────────────────────────────
+gmail:
+  # Only fetch emails received within the last N hours (per run)
+  time_window_hours: 4
+
+  # Gmail labels to fetch from (INBOX, IMPORTANT, STARRED, etc.)
+  labels:
+    - INBOX
+    - IMPORTANT
+
+  # Only include emails from these senders (leave empty [] to include all)
+  priority_senders: []
+  #  - boss@company.com
+  #  - team@myorg.com
+
+  # Skip emails from these senders / domains
+  exclude_senders:
+    - noreply
+    - no-reply
+    - mailer-daemon
+    - newsletter
+    - unsubscribe
+
+  # Max emails to process per scheduled run
+  max_emails: 40
+
+# ─── GOOGLE GROUPS ────────────────────────────────────────────────────────────
+google_groups:
+  # List the exact Google Group names (the part before @googlegroups.com)
+  # Example: if the group email is myteam-devs@googlegroups.com → add "myteam-devs"
+  groups:
+    - your-group-name-here # REPLACE THIS: The exact part before @googlegroups.com
+  #  - another-group-name
+
+  # How many recent topics to fetch per group per run
+  max_topics_per_group: 20
+
+  # Only fetch topics posted in the last N hours (240 hours = 10 days)
+  time_window_hours: 240
+
+# ─── SUMMARIZATION ────────────────────────────────────────────────────────────
+summary:
+  # NVIDIA NIM model to use
+  model: "meta/llama-3.3-70b-instruct"
+
+  # Topics you care about — the LLM will prioritize these in summaries
+  focus_topics:
+    - project updates
+    - deadlines
+    - action items
+    - announcements
+    - technical discussions
+  # Add more:
+  #  - machine learning
+  #  - research
+  #  - meetings
+
+  # Summary style: "bullet_points" | "paragraph" | "tldr"
+  style: bullet_points
+
+  # Language for the summary output
+  language: English
+
+  # Max tokens for LLM response (controls summary length)
+  max_tokens: 1500
+
+  # Temperature — lower = more factual/structured, higher = more creative
+  temperature: 0.3
+
+# ─── NOTION OUTPUT ────────────────────────────────────────────────────────────
+notion:
+  # Title format for each summary page
+  # Available variables: {date}, {time}, {email_count}, {group_count}
+  page_title_format: "📬 Summary · {date} {time}"
+
+  # Add clickable source links to each email/post in the summary
+  add_source_links: true
+
+  # Add a stats block at the top (emails processed, model used, etc.)
+  show_stats_block: true
+
+# ─── SCHEDULE ─────────────────────────────────────────────────────────────────
+schedule:
+  # Times to run daily (24-hour format, IST / Asia/Kolkata)
+  times:
+    - "09:00"
+    - "12:30"
+    - "15:00"
+    - "18:00"
+    - "21:00"
+  timezone: "Asia/Kolkata"
